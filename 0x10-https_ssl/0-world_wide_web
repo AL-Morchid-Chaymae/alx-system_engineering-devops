@@ -1,17 +1,22 @@
-function get_subdomain_info {
-    local subdomain=$1
-    local domain=$2
-    local record_type=$(dig $subdomain.$domain +short | awk '{print toupper($1)}')
-    local destination=$(dig $subdomain.$domain +short)
-    echo "The subdomain $subdomain is a $record_type record and points to $destination"
+#!/usr/bin/env bash
+# Script that will display information about subdomains.
+
+display_info(){
+	local domain=$1
+	local subdomain=$2
+	echo "$(dig $2.$1 | grep -A1 'ANSWER SECTION:' | tail -1 | awk '{split($1, parts, ".");print "The subdomain " parts[1] " is a " $4 " record and points to " $5}')"
 }
 
-if [ -z "$subdomain" ]; then
-    get_subdomain_info www.hitone.tech
-    get_subdomain_info lb-01.hitone.tech
-    get_subdomain_info web-01.hitone.tech
-    get_subdomain_info web-02.hitone.tech
-else
-    get_subdomain_info $subdomain.hitone.tech
-fi
+# Main script
+domain=$1
+subdomain=$2
 
+if [ "$#" -eq 1 ]; then
+    # Display information for default subdomains
+    for sub in www lb-01 web-01 web-02; do
+        display_info $domain $sub
+    done
+elif [ "$#" -eq 2 ]; then
+    # Display information for specified subdomain
+    display_info $domain $subdomain
+fi
