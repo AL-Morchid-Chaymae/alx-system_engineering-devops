@@ -1,22 +1,19 @@
 #!/usr/bin/env bash
-# Display information about subdomains
-
-subdomain_info () {
-  if [ -n "$2" ]
-  then
-    dig "$2.$1" | grep -A1 'ANSWER SECTION:' | paste - - | awk -v \
-	subdomain="$2" '{print "The subdomain " subdomain " is a " $7 " record and\
- points to " $8}'
-  else
-	  dig "www.$1" | grep -A1 'ANSWER SECTION:' | paste - - | awk '{print "The\
- subdomain www is a " $7 " record and points to " $8}'
-	  dig "lb-01.$1" | grep -A1 'ANSWER SECTION:' | paste - - | awk '{print "The\
- subdomain lb-01 is a " $7 " record and points to " $8}'
-	  dig "web-01.$1" | grep -A1 'ANSWER SECTION:' | paste - - | awk '{print "The\
- subdomain web-01 is a " $7 " record and points to " $8}'
-	  dig "web-02.$1" | grep -A1 'ANSWER SECTION:' | paste - - | awk '{print "The\
- subdomain web-02 is a " $7 " record and points to " $8}'
-  fi
+#Configure domain zone so that the subdomain www points to your load-balancer IP
+#shellcheck disable=SC2059
+subdomain()
+{
+    RECORD_TYPE=$(dig "$1" | awk '/[0-9]+\.[0-9]+\.[0-9]+\.[0-9]/{print $4}')
+    DEST=$(dig "$1" | awk '/[0-9]+\.[0-9]+\.[0-9]+\.[0-9]/{print $5}')
+    echo The subdomain "$2" is a "$RECORD_TYPE" record and points to "$DEST"
 }
 
-subdomain_info "$1" "$2"
+if [ "$2" ]
+then
+    subdomain "$2.$1" "$2"
+else
+    subdomain "www.$1" www
+    subdomain "lb-01.$1" lb-01
+    subdomain "web-01.$1" web-01
+    subdomain "web-02.$1" web-02
+fi
