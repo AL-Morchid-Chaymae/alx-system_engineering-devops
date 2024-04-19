@@ -1,19 +1,17 @@
-#!/usr/bin/env bash
-#Configure domain zone so that the subdomain www points to your load-balancer IP
-#shellcheck disable=SC2059
-subdomain()
-{
-    RECORD_TYPE=$(dig "$1" | awk '/[0-9]+\.[0-9]+\.[0-9]+\.[0-9]/{print $4}')
-    DEST=$(dig "$1" | awk '/[0-9]+\.[0-9]+\.[0-9]+\.[0-9]/{print $5}')
-    echo The subdomain "$2" is a "$RECORD_TYPE" record and points to "$DEST"
+function get_subdomain_info {
+    local subdomain=$1
+    local domain=$2
+    local record_type=$(dig $subdomain.$domain +short | awk '{print toupper($1)}')
+    local destination=$(dig $subdomain.$domain +short)
+    echo "The subdomain $subdomain is a $record_type record and points to $destination"
 }
 
-if [ "$2" ]
-then
-    subdomain "$2.$1" "$2"
+if [ -z "$subdomain" ]; then
+    get_subdomain_info www.hitone.tech
+    get_subdomain_info lb-01.hitone.tech
+    get_subdomain_info web-01.hitone.tech
+    get_subdomain_info web-02.hitone.tech
 else
-    subdomain "www.$1" www
-    subdomain "lb-01.$1" lb-01
-    subdomain "web-01.$1" web-01
-    subdomain "web-02.$1" web-02
+    get_subdomain_info $subdomain.hitone.tech
 fi
+
