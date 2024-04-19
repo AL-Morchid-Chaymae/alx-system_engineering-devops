@@ -1,7 +1,17 @@
-sudo ufw status verbose
-sudo ufw default deny incoming
-sudo ufw default allow outgoing
-sudo ufw allow 22/tcp
-sudo ufw allow 443/tcp
-sudo ufw allow 80/tcp
-sudo ufw enable
+function get_subdomain_info {
+    local subdomain=$1
+    local domain=$2
+    local record_type=$(dig $subdomain.$domain +short | awk '{print toupper($1)}')
+    local destination=$(dig $subdomain.$domain +short)
+    echo "The subdomain $subdomain is a $record_type record and points to $destination"
+}
+
+if [ -z "$subdomain" ]; then
+    get_subdomain_info www.hitone.tech
+    get_subdomain_info lb-01.hitone.tech
+    get_subdomain_info web-01.hitone.tech
+    get_subdomain_info web-02.hitone.tech
+else
+    get_subdomain_info $subdomain.hitone.tech
+fi
+
