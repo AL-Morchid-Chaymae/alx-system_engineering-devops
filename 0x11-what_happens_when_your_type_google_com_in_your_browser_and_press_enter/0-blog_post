@@ -1,0 +1,33 @@
+Here's a draft for my blog post:
+
+What Happens When You Type https://www.google.com in Your Browser and Press Enter?
+Have you ever wondered what happens behind the scenes when you type a URL like "https://www.google.com" into your browser and press Enter? In this blog post, we'll explore the journey of a web request from your browser to Google's servers and back.
+
+DNS Request
+The process begins with a Domain Name System (DNS) request. Your browser needs to find the IP address associated with the domain name "www.google.com". It sends a request to a DNS server, which then looks up the IP address associated with the domain name.
+
+TCP/IP
+Once the IP address is obtained, your browser initiates a TCP (Transmission Control Protocol) connection to the IP address on port 443, which is the default port for HTTPS communication. TCP ensures that the data packets sent between your browser and the server are delivered reliably and in order.
+
+Firewall
+If you have a firewall configured, it may inspect the outgoing request and decide whether to allow or block it based on its rules. A firewall helps protect your computer from unauthorized access and potentially harmful traffic.
+
+HTTPS/SSL
+Since we're accessing Google over HTTPS, a secure connection is established using SSL (Secure Sockets Layer) or its successor, TLS (Transport Layer Security). This involves a series of steps, including the server presenting its SSL/TLS certificate to prove its identity, and both the server and the browser agreeing on a shared encryption key to secure the communication.
+
+Load-Balancer
+Google, being a massive service, likely uses load balancers to distribute incoming traffic across multiple servers. Load balancers help ensure that no single server gets overwhelmed with requests and can improve the overall performance and reliability of the service.
+
+Web Server
+Once the connection is established, your request reaches one of Google's web servers. These servers are responsible for handling incoming requests, processing them, and generating responses. In this case, the web server processes your request for the Google homepage.
+
+Application Server
+For dynamic content or additional processing, the web server may communicate with an application server. This server runs applications that generate content based on your request. For example, if you perform a search on Google, an application server might handle the search query and return the results.
+
+Database
+In some cases, the application server may need to access a database to retrieve or store data. For example, when you search for something on Google, the application server might query a database to find relevant search results.
+
+Conclusion
+After going through these steps, the web server generates a response, which includes the HTML, CSS, and JavaScript needed to render the Google homepage in your browser. Your browser then interprets this response and displays the Google homepage, completing the journey of your web request.
+
+Understanding this process can give you a deeper appreciation for the complexity and sophistication of the technologies that power the web.
